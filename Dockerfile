@@ -1,16 +1,12 @@
-runtime: python311 # or another supported version
+# syntax=docker/dockerfile:1
 
-instance_class: F2
+FROM python:3.8-slim-buster
 
-env_variables:
-  BUCKET_NAME: "example-gcs-bucket"
+WORKDIR /python-docker
 
-handlers:
-# Matches requests to /images/... to files in static/images/...
-- url: /images
-  static_dir: static/images
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
-- url: /.*
-  secure: always
-  redirect_http_response_code: 301
-  script: auto
+COPY . .
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
